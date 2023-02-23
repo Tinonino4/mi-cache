@@ -19,14 +19,9 @@ cloud:
   aws:
     region:
       static: us-east-1
-      # static: eu-west-1
       auto: false
     credentials:
-      access-key: AKIASL4IVGME5U3BIOGT
-      secret-key: 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
-      # access-key: test
-      # secret-key: test
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
     end-point:
-      uri: https://sqs.us-east-1.amazonaws.com/162958488329/notification-queue
-      # uri: http://localhost:4566/000000000000/notification-queue
-
+      uri: ${NOTIFICATION_QUEUE_URL}
