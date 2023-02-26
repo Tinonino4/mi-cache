@@ -1,4 +1,4 @@
-package com.micache.domain;
+package com.micache.infrastructure.adapter.output.repository.entity;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
@@ -16,18 +14,18 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmationToken {
+@Entity
+@Table(name = "confirmation_token")
+public class ConfirmationTokenEntity {
+    @Id
+    @GeneratedValue
     private UUID id; // PK
     @NotNull
     private UUID idUser; //FK
     @NotNull
+    @Column(name="confirmation_token")
     private String confirmationToken;
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="created_at")
     private Date createdAt;
-
-    public ConfirmationToken(UUID idUser) {
-        this.idUser = idUser;
-        this.createdAt = new Date();
-        this.confirmationToken = UUID.randomUUID().toString();
-    }
 }

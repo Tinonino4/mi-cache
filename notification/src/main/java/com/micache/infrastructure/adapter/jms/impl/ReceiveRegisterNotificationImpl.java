@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -18,9 +20,9 @@ public class ReceiveRegisterNotificationImpl implements ReceiveRegisterNotificat
     private final ObjectMapper mapper;
     @Override
     @SqsListener("notification-queue")
-    public void receiveNotification(String notificationRequest) throws JsonProcessingException {
+    public void receiveNotification(String notificationRequest) throws IOException {
             log.info("Received message: {}", notificationRequest);
             NotificationRequest notification = mapper.readValue(notificationRequest, NotificationRequest.class);
-            sendRegisterConfirmationUseCase.execute(notificationRequest);
+            sendRegisterConfirmationUseCase.execute(notification);
     }
 }

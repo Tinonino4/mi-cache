@@ -1,4 +1,4 @@
-package com.micache.domain;
+package com.micache.domain.model;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
