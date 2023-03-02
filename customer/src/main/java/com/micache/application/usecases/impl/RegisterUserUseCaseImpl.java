@@ -56,6 +56,7 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
                 createAndSaveConfirmationToken(userSaved.getId());
 
         NotificationRequest notificationRequest = NotificationRequest.builder()
+                .id(userSaved.getId())
                 .firstname(userSaved.getFirstname())
                 .lastname(userSaved.getLastname())
                 .email(userSaved.getEmail())
@@ -66,6 +67,8 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
         var jwtToken = jwtService.generateToken(userMapper.toUserEntityFromUser(user));
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .tokenConfirmation(confirmationTokenSaved.getConfirmationToken())
+                .userId(userSaved.getId().toString())
                 .build();
     }
 

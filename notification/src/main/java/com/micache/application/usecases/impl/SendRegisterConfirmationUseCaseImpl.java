@@ -54,7 +54,7 @@ public class SendRegisterConfirmationUseCaseImpl implements SendRegisterConfirma
 
         mail.personalization.get(0).addDynamicTemplateData("USER_NAME", notificationRequest.getFirstname());
         mail.personalization.get(0).addDynamicTemplateData("USER_SURNAME", notificationRequest.getLastname());
-        mail.personalization.get(0).addDynamicTemplateData("LINK", urlBase + endpoint + notificationRequest.getToken());
+        mail.personalization.get(0).addDynamicTemplateData("LINK", urlBase + endpoint + notificationRequest.getToken() + "/" + notificationRequest.getId().toString());
         mail.setTemplateId(template);
 
         SendGrid sg = new SendGrid(sendgridApiKey);

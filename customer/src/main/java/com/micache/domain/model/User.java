@@ -48,4 +48,8 @@ public class User {
         if (pattern.matcher(this.email).matches()) return true;
         throw new InvalidEmailException("Invalid Email");
     }
+
+    public void activate() {
+        this.active = true;
+    }
 }

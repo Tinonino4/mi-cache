@@ -1,6 +1,7 @@
 package com.micache.application.usecases.impl;
 
 import com.micache.application.usecases.AuthUserUseCase;
+import com.micache.domain.exception.InvalidEmailException;
 import com.micache.domain.exception.UserAlreadyExistsException;
 import com.micache.infrastructure.adapters.UserRepository;
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationRequest;
@@ -26,7 +27,7 @@ public class AuthUserUseCaseImpl implements AuthUserUseCase {
                 )
         );
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserAlreadyExistsException(""));
+                .orElseThrow(() -> new InvalidEmailException(""));
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)

@@ -23,8 +23,21 @@ public class UserMapper {
                 .password(user.getPassword()).
                 build();
     }
-    User toUserFromUserEntity(UserEntity userEntity) {
-        return null;
+    public User toUserFromUserEntity(UserEntity userEntity) {
+        return User.builder()
+                .id(userEntity.getId())
+                .email(userEntity.getEmail())
+                .firstname(userEntity.getFirstname())
+                .lastname(userEntity.getLastname())
+                .active(userEntity.isActive())
+                .birthday(userEntity.getBirthday())
+                .city(userEntity.getCity())
+                .pid(userEntity.getPid())
+                .created_at(userEntity.getCreated_at())
+                .role(userEntity.getRole())
+                .education(userEntity.getEducation())
+                .password(userEntity.getPassword()).
+                build();
     }
 
     public User toUserFromRegisterRequest(RegisterRequest request) {
