@@ -11,6 +11,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    private String token;
+public class RegisterResponse {
+    private UUID token;
+    private UUID userId;
 }

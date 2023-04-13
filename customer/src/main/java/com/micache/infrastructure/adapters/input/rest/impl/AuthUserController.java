@@ -1,7 +1,7 @@
 package com.micache.infrastructure.adapters.input.rest.impl;
 
 import com.micache.application.usecases.AuthUserUseCase;
-import com.micache.infrastructure.adapters.input.rest.AuthUser;
+import com.micache.domain.ports.input.AuthUser;
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationRequest;
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationResponse;
 import lombok.extern.slf4j.Slf4j;

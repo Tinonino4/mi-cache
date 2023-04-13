@@ -2,8 +2,7 @@ package com.micache.application.usecases.impl;
 
 import com.micache.application.usecases.AuthUserUseCase;
 import com.micache.domain.exception.InvalidEmailException;
-import com.micache.domain.exception.UserAlreadyExistsException;
-import com.micache.infrastructure.adapters.UserRepository;
+import com.micache.infrastructure.adapters.output.repository.UserRepository;
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationRequest;
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationResponse;
 import com.micache.security.jwt.JwtService;

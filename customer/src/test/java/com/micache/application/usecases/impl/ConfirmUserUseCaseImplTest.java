@@ -1,10 +1,12 @@
 package com.micache.application.usecases.impl;
 
 import com.micache.application.usecases.ConfirmUserUseCase;
+import com.micache.application.usecases.mapper.UserSkillsValuesMapper;
 import com.micache.domain.exception.ConfirmationTokenNotFound;
-import com.micache.infrastructure.adapters.UserRepository;
+import com.micache.infrastructure.adapters.output.repository.UserRepository;
+import com.micache.infrastructure.adapters.output.repository.UserSkillsValuesRepository;
 import com.micache.infrastructure.adapters.output.repository.entity.ConfirmationTokenEntity;
-import com.micache.infrastructure.adapters.output.repository.entity.ConfirmationTokenRepository;
+import com.micache.infrastructure.adapters.output.repository.ConfirmationTokenRepository;
 import com.micache.security.jwt.entity.UserEntity;
 import com.micache.security.jwt.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ConfirmUserUseCaseImplTest {
@@ -29,6 +31,9 @@ class ConfirmUserUseCaseImplTest {
     @Mock
     private UserRepository userRepository;
     private UserMapper userMapper = new UserMapper();
+    @Mock
+    private UserSkillsValuesRepository userSkillsValuesRepository;
+    private UserSkillsValuesMapper userSkillsValuesMapper = new UserSkillsValuesMapper();
 
     private ConfirmUserUseCase underTest;
     @BeforeEach
@@ -36,16 +41,18 @@ class ConfirmUserUseCaseImplTest {
         underTest = new ConfirmUserUseCaseImpl(
                 confirmationTokenRepository,
                 userRepository,
-                userMapper
+                userMapper,
+                userSkillsValuesRepository,
+                userSkillsValuesMapper
         );
     }
     @Test
     void givenTokenAndUserIdConfirmationNotFoundThenThrowError() {
         // given
-        String token = "token";
-        String userId = UUID.randomUUID().toString();
+        UUID token = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
         String expectedError = "Token not found";
-        when(confirmationTokenRepository.findByIdUserAndConfirmationToken(any(), anyString()))
+        when(confirmationTokenRepository.findByIdUserAndConfirmationToken(any(), any()))
                 .thenReturn(Optional.empty());
         // when
         try {
@@ -59,11 +66,11 @@ class ConfirmUserUseCaseImplTest {
     @Test
     void givenTokenAndUserIdValidThenActivateUser() {
         // given
-        String token = "token";
-        String userId = UUID.randomUUID().toString();
+        UUID token = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
         ConfirmationTokenEntity confirmationTokenEntity =
                 ConfirmationTokenEntity.builder()
-                        .idUser(UUID.fromString(userId))
+                        .idUser(userId)
                         .confirmationToken(token)
                         .build();
         UserEntity userEntity = UserEntity.builder()
@@ -75,13 +82,14 @@ class ConfirmUserUseCaseImplTest {
                 .active(true)
                 .id(UUID.randomUUID())
                 .build();
-        when(confirmationTokenRepository.findByIdUserAndConfirmationToken(any(), anyString()))
+        when(confirmationTokenRepository.findByIdUserAndConfirmationToken(any(), any()))
                 .thenReturn(Optional.of(confirmationTokenEntity));
-        when(userRepository.getById(UUID.fromString(userId))).thenReturn(userEntity);
+        when(userRepository.getById(userId)).thenReturn(userEntity);
         when(userRepository.saveAndFlush(any())).thenReturn(userEntityActivated);
         // when
         underTest.execute(token, userId);
         // then
+        verify(userSkillsValuesRepository, times(1)).saveAndFlush(any());
         assertTrue(userEntityActivated.isActive());
     }
 }

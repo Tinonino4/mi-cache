@@ -5,14 +5,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.micache.application.usecases.mapper.ConfirmationTokenMapper;
 import com.micache.domain.exception.InvalidEmailException;
 import com.micache.domain.exception.UserAlreadyExistsException;
-import com.micache.domain.model.ConfirmationToken;
 import com.micache.domain.model.Role;
-import com.micache.infrastructure.adapters.UserRepository;
+import com.micache.infrastructure.adapters.input.rest.model.RegisterResponse;
+import com.micache.infrastructure.adapters.output.repository.UserRepository;
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationResponse;
 import com.micache.infrastructure.adapters.input.rest.model.RegisterRequest;
 import com.micache.infrastructure.adapters.jms.RegisterNotification;
 import com.micache.infrastructure.adapters.output.repository.entity.ConfirmationTokenEntity;
-import com.micache.infrastructure.adapters.output.repository.entity.ConfirmationTokenRepository;
+import com.micache.infrastructure.adapters.output.repository.ConfirmationTokenRepository;
 import com.micache.security.jwt.JwtService;
 import com.micache.security.jwt.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,16 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.micache.security.jwt.mapper.UserMapper;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.*;
 
@@ -53,8 +49,6 @@ class RegisterUserUseCaseImplTest {
     private final UserMapper userMapper = new UserMapper();
     private final ConfirmationTokenMapper confirmationTokenMapper = new ConfirmationTokenMapper();
 
-    private final JwtService jwtService = new JwtService();
-
     @Mock
     private RegisterNotification registerNotification;
 
@@ -69,7 +63,6 @@ class RegisterUserUseCaseImplTest {
                         passwordEncoder,
                         userMapper,
                         confirmationTokenMapper,
-                        jwtService,
                         registerNotification);
     }
 
@@ -86,11 +79,10 @@ class RegisterUserUseCaseImplTest {
         ConfirmationTokenEntity confirmationToken = createCofirmationToken();
         when(confirmationTokenRepository.saveAndFlush(any())).thenReturn(confirmationToken);
         doNothing().when(registerNotification).sendNotification(any());
-        when(jwtService.generateToken(userDetailsMock)).thenReturn("abc");
         // when
-        AuthenticationResponse response = underTest.execute(request);
+        RegisterResponse response = underTest.execute(request);
         // then
-        assertTrue(response.getToken().startsWith("ey"));
+        assertNotNull(response.getToken());
     }
 
     private UserEntity createUserSaved() {
@@ -106,9 +98,10 @@ class RegisterUserUseCaseImplTest {
     }
 
     private ConfirmationTokenEntity createCofirmationToken() {
+        UUID token = UUID.fromString("cb0ac05b-d825-4a1e-9a28-6b397c1a0324");
         return ConfirmationTokenEntity.builder()
                 .id(UUID.randomUUID())
-                .confirmationToken(UUID.randomUUID().toString())
+                .confirmationToken(token)
                 .createdAt(new Date())
                 .idUser(UUID.randomUUID()).build();
     }

@@ -1,4 +1,4 @@
-package com.micache.infrastructure.adapters;
+package com.micache.infrastructure.adapters.output.repository;
 
 import com.micache.security.jwt.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

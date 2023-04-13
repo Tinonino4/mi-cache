@@ -20,13 +20,13 @@ public class ConfirmationToken {
     @NotNull
     private UUID idUser; //FK
     @NotNull
-    private String confirmationToken;
+    private UUID confirmationToken;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     public ConfirmationToken(UUID idUser) {
         this.idUser = idUser;
         this.createdAt = new Date();
-        this.confirmationToken = UUID.randomUUID().toString();
+        this.confirmationToken = UUID.randomUUID();
     }
 }

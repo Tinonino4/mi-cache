@@ -6,13 +6,17 @@ import com.micache.application.usecases.mapper.ConfirmationTokenMapper;
 import com.micache.domain.exception.UserAlreadyExistsException;
 import com.micache.domain.model.Role;
 import com.micache.domain.model.User;
-import com.micache.infrastructure.adapters.UserRepository;
+import com.micache.domain.model.UserSkillsValues;
+import com.micache.infrastructure.adapters.input.rest.model.RegisterResponse;
+import com.micache.infrastructure.adapters.output.repository.UserRepository;
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationResponse;
 import com.micache.infrastructure.adapters.input.rest.model.RegisterRequest;
 import com.micache.infrastructure.adapters.jms.RegisterNotification;
 import com.micache.infrastructure.adapters.jms.model.NotificationRequest;
 import com.micache.infrastructure.adapters.jms.model.NotificationType;
-import com.micache.infrastructure.adapters.output.repository.entity.ConfirmationTokenRepository;
+import com.micache.infrastructure.adapters.output.repository.ConfirmationTokenRepository;
+import com.micache.infrastructure.adapters.output.repository.UserSkillsValuesRepository;
+import com.micache.infrastructure.adapters.output.repository.entity.UserSkillsValuesEntity;
 import com.micache.security.jwt.JwtService;
 import com.micache.security.jwt.entity.UserEntity;
 import com.micache.security.jwt.mapper.UserMapper;
@@ -36,11 +40,10 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final ConfirmationTokenMapper confirmationTokenMapper;
-    private final JwtService jwtService;
 
     private final RegisterNotification registerNotification;
     @Override
-    public AuthenticationResponse execute(RegisterRequest request) throws JsonProcessingException {
+    public RegisterResponse execute(RegisterRequest request) throws JsonProcessingException {
         log.info("{} - add User: {}", RequestMethod.POST, request.toString());
         userMapper.toUserFromRegisterRequest(request).isEmailValid();
 
@@ -64,11 +67,10 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
                 .notificationType(NotificationType.WELCOME)
                 .build();
         registerNotification.sendNotification(notificationRequest);
-        var jwtToken = jwtService.generateToken(userMapper.toUserEntityFromUser(user));
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .tokenConfirmation(confirmationTokenSaved.getConfirmationToken())
-                .userId(userSaved.getId().toString())
+
+        return RegisterResponse.builder()
+                .token(confirmationTokenSaved.getConfirmationToken())
+                .userId(userSaved.getId())
                 .build();
     }
 

@@ -37,3 +37,4 @@ notification:
 sendgrid:
   api-key: ${SENDGRID_API_KEY}
   endpoint: mail/send
+  sendmail: ${SEND_MAIL}

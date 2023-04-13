@@ -1,4 +1,4 @@
-package com.micache.infrastructure.adapters.input.rest;
+package com.micache.domain.ports.input;
 
 
 import com.micache.infrastructure.adapters.input.rest.model.AuthenticationRequest;

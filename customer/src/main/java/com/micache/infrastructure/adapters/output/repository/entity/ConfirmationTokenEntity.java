@@ -24,7 +24,7 @@ public class ConfirmationTokenEntity {
     private UUID idUser; //FK
     @NotNull
     @Column(name="confirmation_token")
-    private String confirmationToken;
+    private UUID confirmationToken;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_at")
     private Date createdAt;

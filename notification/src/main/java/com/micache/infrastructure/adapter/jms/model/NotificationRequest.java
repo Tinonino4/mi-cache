@@ -19,7 +19,7 @@ public class NotificationRequest {
     private String email;
     private String firstname;
     private String lastname;
-    private String token;
+    private UUID token;
 
     public String toJSON(NotificationRequest notificationRequest) throws JsonProcessingException {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();

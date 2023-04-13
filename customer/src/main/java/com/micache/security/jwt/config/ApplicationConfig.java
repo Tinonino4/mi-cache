@@ -1,6 +1,6 @@
 package com.micache.security.jwt.config;
 
-import com.micache.infrastructure.adapters.UserRepository;
+import com.micache.infrastructure.adapters.output.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,4 +41,9 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    /* @Bean
+    public DefaultExceptionHandler defaultExceptionHandler() {
+        return new DefaultExceptionHandler();
+    } */
 }

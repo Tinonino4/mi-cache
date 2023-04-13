@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.micache.application.usecases.RegisterUserUseCase;
 import com.micache.domain.exception.InvalidEmailException;
 import com.micache.domain.exception.UserAlreadyExistsException;
-import com.micache.infrastructure.adapters.input.rest.RegisterUser;
+import com.micache.domain.ports.input.RegisterUser;
 import com.micache.infrastructure.adapters.input.rest.model.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +23,7 @@ public class RegisterUserController implements RegisterUser {
 
     @Override
     @PostMapping()
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-
-        try {
-            return ResponseEntity.ok(registerUser.execute(request));
-        } catch (UserAlreadyExistsException | InvalidEmailException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) throws JsonProcessingException {
+        return ResponseEntity.ok(registerUser.execute(request));
     }
 }

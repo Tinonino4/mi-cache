@@ -24,7 +24,7 @@ public class UserSkillsValuesEntity {
     @GeneratedValue
     private UUID id;
     @NotNull
-    private Long idUser;
+    private UUID idUser;
     @NotNull
     private float teamwork;
     @NotNull
