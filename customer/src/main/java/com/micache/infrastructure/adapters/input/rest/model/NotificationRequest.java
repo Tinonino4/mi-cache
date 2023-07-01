@@ -1,4 +1,4 @@
-package com.micache.infrastructure.adapters.jms.model;
+package com.micache.infrastructure.adapters.input.rest.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

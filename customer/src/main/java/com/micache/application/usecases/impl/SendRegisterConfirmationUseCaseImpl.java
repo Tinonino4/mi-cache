@@ -1,7 +1,8 @@
 package com.micache.application.usecases.impl;
 
 import com.micache.application.usecases.SendRegisterConfirmationUseCase;
-import com.micache.infrastructure.adapter.jms.model.NotificationRequest;
+
+import com.micache.infrastructure.adapters.input.rest.model.NotificationRequest;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.SendGrid;

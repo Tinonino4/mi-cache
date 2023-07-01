@@ -35,13 +35,11 @@ public class ConfirmUserUseCaseImpl implements ConfirmUserUseCase {
         UserEntity userEntity = userRepository.getById(userId);
         User user = mapper.toUserFromUserEntity(userEntity);
         user.activate();
-
         userSkillsValuesRepository.saveAndFlush(
                 userSkillsValuesMapper.toUserSkillsValuesEntity(
                         new UserSkillsValues(user.getId())
                 )
         );
-
         return new ConfirmResponse(
                 userRepository.saveAndFlush(
                         mapper.toUserEntityFromUser(user)

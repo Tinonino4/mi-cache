@@ -2,22 +2,17 @@ package com.micache.application.usecases.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.micache.application.usecases.RegisterUserUseCase;
+import com.micache.application.usecases.SendRegisterConfirmationUseCase;
 import com.micache.application.usecases.mapper.ConfirmationTokenMapper;
 import com.micache.domain.exception.UserAlreadyExistsException;
 import com.micache.domain.model.Role;
 import com.micache.domain.model.User;
-import com.micache.domain.model.UserSkillsValues;
+import com.micache.infrastructure.adapters.input.rest.model.NotificationRequest;
+import com.micache.infrastructure.adapters.input.rest.model.NotificationType;
 import com.micache.infrastructure.adapters.input.rest.model.RegisterResponse;
 import com.micache.infrastructure.adapters.output.repository.UserRepository;
-import com.micache.infrastructure.adapters.input.rest.model.AuthenticationResponse;
 import com.micache.infrastructure.adapters.input.rest.model.RegisterRequest;
-import com.micache.infrastructure.adapters.jms.RegisterNotification;
-import com.micache.infrastructure.adapters.jms.model.NotificationRequest;
-import com.micache.infrastructure.adapters.jms.model.NotificationType;
 import com.micache.infrastructure.adapters.output.repository.ConfirmationTokenRepository;
-import com.micache.infrastructure.adapters.output.repository.UserSkillsValuesRepository;
-import com.micache.infrastructure.adapters.output.repository.entity.UserSkillsValuesEntity;
-import com.micache.security.jwt.JwtService;
 import com.micache.security.jwt.entity.UserEntity;
 import com.micache.security.jwt.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
 import com.micache.domain.model.ConfirmationToken;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,10 +36,9 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final ConfirmationTokenMapper confirmationTokenMapper;
-
-    private final RegisterNotification registerNotification;
+    private final SendRegisterConfirmationUseCase sendRegisterConfirmationUseCase;
     @Override
-    public RegisterResponse execute(RegisterRequest request) throws JsonProcessingException {
+    public RegisterResponse execute(RegisterRequest request) throws IOException {
         log.info("{} - add User: {}", RequestMethod.POST, request.toString());
         userMapper.toUserFromRegisterRequest(request).isEmailValid();
 
@@ -66,7 +61,7 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
                 .token(confirmationTokenSaved.getConfirmationToken())
                 .notificationType(NotificationType.WELCOME)
                 .build();
-        registerNotification.sendNotification(notificationRequest);
+        sendRegisterConfirmationUseCase.execute(notificationRequest);
 
         return RegisterResponse.builder()
                 .token(confirmationTokenSaved.getConfirmationToken())

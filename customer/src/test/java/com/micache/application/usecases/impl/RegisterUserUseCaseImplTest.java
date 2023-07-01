@@ -2,18 +2,16 @@ package com.micache.application.usecases.impl;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.micache.application.usecases.SendRegisterConfirmationUseCase;
 import com.micache.application.usecases.mapper.ConfirmationTokenMapper;
 import com.micache.domain.exception.InvalidEmailException;
 import com.micache.domain.exception.UserAlreadyExistsException;
 import com.micache.domain.model.Role;
 import com.micache.infrastructure.adapters.input.rest.model.RegisterResponse;
 import com.micache.infrastructure.adapters.output.repository.UserRepository;
-import com.micache.infrastructure.adapters.input.rest.model.AuthenticationResponse;
 import com.micache.infrastructure.adapters.input.rest.model.RegisterRequest;
-import com.micache.infrastructure.adapters.jms.RegisterNotification;
 import com.micache.infrastructure.adapters.output.repository.entity.ConfirmationTokenEntity;
 import com.micache.infrastructure.adapters.output.repository.ConfirmationTokenRepository;
-import com.micache.security.jwt.JwtService;
 import com.micache.security.jwt.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +25,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +49,7 @@ class RegisterUserUseCaseImplTest {
     private final ConfirmationTokenMapper confirmationTokenMapper = new ConfirmationTokenMapper();
 
     @Mock
-    private RegisterNotification registerNotification;
+    private SendRegisterConfirmationUseCase sendRegisterConfirmationUseCase;
 
 
     RegisterUserUseCaseImpl underTest;
@@ -63,11 +62,11 @@ class RegisterUserUseCaseImplTest {
                         passwordEncoder,
                         userMapper,
                         confirmationTokenMapper,
-                        registerNotification);
+                        sendRegisterConfirmationUseCase);
     }
 
     @Test
-    void givenGoodRequestCreateNewUser() throws JsonProcessingException {
+    void givenGoodRequestCreateNewUser() throws IOException {
         // given
         UserDetails userDetailsMock = Mockito.mock(UserDetails.class);
         Mockito.when(userDetailsMock.getUsername()).thenReturn("testUser");
@@ -78,7 +77,7 @@ class RegisterUserUseCaseImplTest {
         when(userRepository.saveAndFlush(any())).thenReturn(userSaved);
         ConfirmationTokenEntity confirmationToken = createCofirmationToken();
         when(confirmationTokenRepository.saveAndFlush(any())).thenReturn(confirmationToken);
-        doNothing().when(registerNotification).sendNotification(any());
+        doNothing().when(sendRegisterConfirmationUseCase).execute(any());
         // when
         RegisterResponse response = underTest.execute(request);
         // then
@@ -125,7 +124,7 @@ class RegisterUserUseCaseImplTest {
         // when
         try {
             underTest.execute(request);
-        } catch (UserAlreadyExistsException ex) {
+        } catch (UserAlreadyExistsException | IOException ex) {
             // then
             assertEquals(ex.getMessage(), expectedMessage);
         }
@@ -146,7 +145,7 @@ class RegisterUserUseCaseImplTest {
         String expectedMessage = "Invalid Email";
         try {
             underTest.execute(request);
-        } catch (InvalidEmailException ex) {
+        } catch (InvalidEmailException | IOException ex) {
             assertEquals(ex.getMessage(), expectedMessage);
         }
     }

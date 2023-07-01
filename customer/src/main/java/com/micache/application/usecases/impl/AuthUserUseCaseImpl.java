@@ -29,7 +29,7 @@ public class AuthUserUseCaseImpl implements AuthUserUseCase {
                 .orElseThrow(() -> new InvalidEmailException(""));
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .tokenAuth(jwtToken)
                 .build();
     }
 }

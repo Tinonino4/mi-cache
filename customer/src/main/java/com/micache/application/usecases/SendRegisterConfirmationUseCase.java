@@ -1,7 +1,8 @@
 package com.micache.application.usecases;
 
 
-import com.micache.infrastructure.adapter.jms.model.NotificationRequest;
+
+import com.micache.infrastructure.adapters.input.rest.model.NotificationRequest;
 
 import java.io.IOException;
 

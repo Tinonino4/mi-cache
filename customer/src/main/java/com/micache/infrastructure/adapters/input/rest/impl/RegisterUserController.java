@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @Slf4j
 @RequestMapping("/api/v1/register")
@@ -23,7 +25,7 @@ public class RegisterUserController implements RegisterUser {
 
     @Override
     @PostMapping()
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) throws JsonProcessingException {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) throws IOException {
         return ResponseEntity.ok(registerUser.execute(request));
     }
 }

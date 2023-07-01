@@ -164,6 +164,11 @@
 		{
 			"key": "tokenConfirmation",
 			"value": "{{tokenConfirmation}}"
+		},
+		{
+			"key": "tokenAuth",
+			"value": "{{tokenAuth}}",
+			"type": "string"
 		}
 	]
 }

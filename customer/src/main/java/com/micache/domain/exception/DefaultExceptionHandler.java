@@ -1,18 +1,11 @@
 package com.micache.domain.exception;
 
-import com.micache.domain.exception.ApiError;
-import com.micache.domain.exception.InvalidEmailException;
-import com.micache.domain.exception.UserAlreadyExistsException;
 import org.apache.http.HttpStatus;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_UNPROCESSABLE_ENTITY;
 

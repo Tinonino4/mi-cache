@@ -26,7 +26,7 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/**", "/api/v1/register/**", "/api/v1/confirm/**")
+                .antMatchers("/api/v1/auth/**", "/api/v1/register/**", "/api/v1/confirm/**/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

@@ -25,3 +25,16 @@ cloud:
       secret-key: ${SECRET_KEY}
     end-point:
       uri: ${NOTIFICATION_QUEUE_URL}
+
+notification:
+  sender: "cache.aumenta.tu.valor@gmail.com"
+  subject: "Un paso más para empezar a aumentar tu caché!"
+  template: d-4dc38c26e21e4208b3efc5390f88d4d4
+  url:
+    base: ${BASE_URL}
+    endpoint: api/v1/confirm/
+
+sendgrid:
+  api-key: ${SENDGRID_API_KEY}
+  endpoint: mail/send
+  sendmail: ${SEND_MAIL}
